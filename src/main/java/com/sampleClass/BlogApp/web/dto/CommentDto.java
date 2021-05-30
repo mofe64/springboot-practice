@@ -1,2 +1,4 @@
-package com.sampleClass.BlogApp.web.dto;public class CommentDto {
+package com.sampleClass.BlogApp.web.dto;
+
+public class CommentDto {
 }

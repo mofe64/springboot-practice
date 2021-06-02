@@ -2,6 +2,7 @@ package com.sampleClass.BlogApp.service.post;
 
 import com.sampleClass.BlogApp.data.models.Post;
 import com.sampleClass.BlogApp.data.repository.PostRepository;
+import com.sampleClass.BlogApp.exceptions.NullPostObjectException;
 import com.sampleClass.BlogApp.web.dto.PostDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    void whenTheSaveMethodIsCalled_thenRepositoryIsCalledOnceTest() {
+    void whenTheSaveMethodIsCalled_thenRepositoryIsCalledOnceTest() throws NullPostObjectException {
         when(postServiceImpl.savePost(new PostDto())).thenReturn(testPost);
         PostDto postDto = new PostDto();
         postServiceImpl.savePost(new PostDto());

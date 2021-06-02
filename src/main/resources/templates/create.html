@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create post</title>
+
+    <link rel="stylesheet" th:href="@{/asset/css/styles/nav.css}">
+    <link rel="stylesheet" th:href="@{/asset/css/styles/footer.css}">
+    <link rel="stylesheet" th:href="@{/asset/css/media-query/footer.css}">
+    <link rel="stylesheet" th:href="@{/asset/css/media-query/nav.css}">
+    <link rel="stylesheet" th:href="@{/asset/css/media-query/style.css}">
+    <link rel="stylesheet" th:href="@{/asset/css/styles/post.css}">
+    <link rel="stylesheet" th:href="@{/asset/css/media-query/post.css}">
+    <link rel="stylesheet" th:href="@{/asset/css/styles/create.css}">
+    <script src="https://kit.fontawesome.com/e2052a1ca7.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+<nav th:insert="/fragment.html::topnav"></nav>
+
+
+<!--Form-->
+<form action="/posts/save" method="post" enctype="multipart/form-data" th:object="${post}">
+    <h2>create a blog post</h2>
+
+    <input type="file" id="avatar"  name="avatar"  th:field="*{imageFile}" accept="image/png, image/jpeg">
+
+    <input type="text" name="text" id="text" placeholder="Title" th:field="*{title}">
+
+    <textarea name="message" id="message" cols="30" rows="10" placeholder="Post content here..." th:field="*{content}"></textarea>
+
+    <input type="submit" value="post your comment">
+</form>
+
+
+<footer th:insert="/fragment.html::footer"></footer>
+
+<script src="../scripts/app.js"></script>
+</body>
+
+</html>

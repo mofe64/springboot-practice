@@ -85,6 +85,9 @@ class PostRepositoryTest {
 
         postRepository.save(blogPost);
         log.info("Blog post after saving --> {}", blogPost);
+        Post savedPost = postRepository.findByPostTitle("What is fintech");
+        assertThat(savedPost).isNotNull();
+        assertThat(savedPost.getAuthor()).isNotNull();
 
     }
 

@@ -11,6 +11,7 @@ import com.sampleClass.BlogApp.web.dto.PostDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -33,29 +34,36 @@ public class PostServiceImpl implements PostService {
         }
         Post post = new Post();
 
-        if (postDto.getImageFile() != null) {
+        if (postDto.getImageFile() != null && !postDto.getImageFile().isEmpty()) {
             Map<Object, Object> params = new HashMap<>();
             params.put("public_id", "blogapp/" + postDto.getImageFile().getName());
             params.put("overwrite", true);
             log.info("cloudinary params --> {}", params);
             try {
-                cloudStorageService.uploadImage(postDto.getImageFile(), ObjectUtils.asMap(
+            Map<?,?> result = cloudStorageService.uploadImage(postDto.getImageFile(), ObjectUtils.asMap(
                         "public_id", "blogapp/" + postDto.getImageFile().getName(),
                         "overwrite", true
                 ));
+                post.setCoverImageUrl((String) result.get("url"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.map(postDto, post);
-        log.info("Post model after mapping --> {}", post);
-        return postRepository.save(post);
+        post.setTitle(postDto.getTitle());
+        post.setContent(postDto.getContent());
+        log.info("Post model  --> {}", post);
+        try{
+            return postRepository.save(post);
+        } catch (DataIntegrityViolationException e) {
+            log.info("Exception occurred -->{}", e.getMessage());
+            throw e;
+        }
+
     }
 
     @Override
     public List<Post> findAllPosts() {
-        return null;
+        return postRepository.findAll();
     }
 
     @Override

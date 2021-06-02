@@ -10,6 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -35,6 +38,13 @@ class PostServiceImplTest {
         postServiceImpl.savePost(new PostDto());
 
         verify(postRepository, times(1)).save(testPost);
+    }
 
+    @Test
+    void whenTheFindAllMethodIsCalled_thenReturnAListOfPosts(){
+        List<Post> postList = new ArrayList<>();
+        when(postServiceImpl.findAllPosts()).thenReturn(postList);
+        postServiceImpl.findAllPosts();
+        verify(postRepository, times(1)).findAll();
     }
 }

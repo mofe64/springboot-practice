@@ -1,14 +1,18 @@
 package com.sampleClass.BlogApp.web.controllers;
 
+import com.sampleClass.BlogApp.data.models.Post;
+import com.sampleClass.BlogApp.exceptions.NullPostObjectException;
 import com.sampleClass.BlogApp.service.post.PostService;
 import com.sampleClass.BlogApp.web.dto.PostDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -18,7 +22,9 @@ public class PostController {
     private PostService postService;
 
     @GetMapping("")
-    public String getIndex() {
+    public String getIndex(Model model) {
+        List<Post> postList = postService.findAllPosts();
+        model.addAttribute("postList", postList);
         return "index";
     }
 
@@ -29,8 +35,25 @@ public class PostController {
     }
 
     @PostMapping("/save")
-    public String savePost(@ModelAttribute(name = "post") @Valid PostDto postDto) {
+    public String savePost(@ModelAttribute(name = "post") @Valid PostDto postDto, Model model) {
         log.info("PostDto Received --> {}", postDto);
-        return "index";
+        try {
+            postService.savePost(postDto);
+        } catch (NullPostObjectException e) {
+            log.info("Exception occurred --> {}", e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("error",true);
+            model.addAttribute("errorMessage", e.getMessage());
+            return "create";
+        }
+        return "redirect:/posts";
+    }
+
+    /*
+    * creates and add a global model object to all templates
+    */
+    @ModelAttribute
+    public void createPostModel(Model model){
+        model.addAttribute("postDto", new PostDto());
     }
 }

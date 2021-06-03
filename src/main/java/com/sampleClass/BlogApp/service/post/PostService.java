@@ -12,6 +12,7 @@ import java.util.List;
 public interface PostService {
     Post savePost(PostDto postDto) throws NullPostObjectException;
     List<Post> findAllPosts();
+    List<Post> findAllPostsInDescendingOrder();
     Post updatePost(PostDto postDto);
     Post findPostById(Integer id);
     void deletePostById(Integer id);

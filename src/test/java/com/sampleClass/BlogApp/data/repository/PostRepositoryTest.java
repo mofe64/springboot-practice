@@ -157,6 +157,13 @@ class PostRepositoryTest {
 
     }
 
+    @Test
+    void findAllPostInDescendingOrderTest(){
+        List<Post> allPosts = postRepository.findByOrderByDateCreatedDesc();
+        allPosts.forEach(post -> log.info("post date --> {}", post.getDateCreated()));
+        assertTrue(allPosts.get(0).getDateCreated().isAfter(allPosts.get(1).getDateCreated()));
+        assertThat(allPosts).isNotEmpty();
 
 
+    }
 }

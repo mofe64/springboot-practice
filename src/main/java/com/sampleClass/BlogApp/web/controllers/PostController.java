@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,7 +24,7 @@ public class PostController {
 
     @GetMapping("")
     public String getIndex(Model model) {
-        List<Post> postList = postService.findAllPosts();
+        List<Post> postList = postService.findAllPostsInDescendingOrder();
         model.addAttribute("postList", postList);
         return "index";
     }
@@ -33,17 +34,25 @@ public class PostController {
         model.addAttribute("post", new PostDto());
         return "create";
     }
-
+/*
+Valid annotation marks the particular field for validation
+the result of the validation is stored in the binding result object
+ */
     @PostMapping("/save")
-    public String savePost(@ModelAttribute(name = "post") @Valid PostDto postDto, Model model) {
+    public String savePost(@ModelAttribute(name = "post") @Valid PostDto postDto,
+                           BindingResult result, Model model) {
         log.info("PostDto Received --> {}", postDto);
+        if(result.hasErrors()){
+            return "create";
+        }
+
         try {
             postService.savePost(postDto);
         } catch (NullPostObjectException e) {
             log.info("Exception occurred --> {}", e.getMessage());
         } catch (DataIntegrityViolationException e) {
             model.addAttribute("error",true);
-            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorMessage", "Title Not");
             return "create";
         }
         return "redirect:/posts";
@@ -51,6 +60,7 @@ public class PostController {
 
     /*
     * creates and add a global model object to all templates
+    *
     */
     @ModelAttribute
     public void createPostModel(Model model){

@@ -67,6 +67,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> findAllPostsInDescendingOrder() {
+        return postRepository.findByOrderByDateCreatedDesc();
+    }
+
+    @Override
     public Post updatePost(PostDto postDto) {
         return null;
     }

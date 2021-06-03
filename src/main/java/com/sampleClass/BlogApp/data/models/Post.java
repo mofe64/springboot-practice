@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +25,9 @@ public class Post {
     private String content;
     private String coverImageUrl;
     @CreationTimestamp
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
     @UpdateTimestamp
-    private LocalDate dateModified;
+    private LocalDateTime dateModified;
     @ManyToOne(cascade = CascadeType.PERSIST)
     //@Join column is used to modify props of join column added to this table eg change the name of the added fk column
     // join columns appear on the many side of the relationship

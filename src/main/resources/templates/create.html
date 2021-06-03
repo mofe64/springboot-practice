@@ -35,9 +35,10 @@
     <input type="file" id="avatar"  name="avatar"  th:field="*{imageFile}" accept="image/png, image/jpeg">
 
     <input type="text" name="text" id="text" placeholder="Title" th:field="*{title}">
+    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
 
     <textarea name="message" id="message" cols="30" rows="10" placeholder="Post content here..." th:field="*{content}"></textarea>
-
+    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" ></span>
     <input type="submit" value="post your comment">
 </form>
 

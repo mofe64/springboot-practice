@@ -6,6 +6,7 @@ import com.sampleClass.BlogApp.data.models.Comment;
 import com.sampleClass.BlogApp.data.models.Post;
 import com.sampleClass.BlogApp.data.repository.PostRepository;
 import com.sampleClass.BlogApp.exceptions.NullPostObjectException;
+import com.sampleClass.BlogApp.exceptions.PostNotFoundException;
 import com.sampleClass.BlogApp.service.cloud.CloudStorageService;
 import com.sampleClass.BlogApp.web.dto.PostDto;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -40,10 +42,10 @@ public class PostServiceImpl implements PostService {
             params.put("overwrite", true);
             log.info("cloudinary params --> {}", params);
             try {
-            Map<?,?> result = cloudStorageService.uploadImage(postDto.getImageFile(), ObjectUtils.asMap(
-                        "public_id", "blogapp/" + postDto.getImageFile().getName(),
-                        "overwrite", true
-                ));
+                Map<?, ?> result = cloudStorageService.uploadImage(postDto.getImageFile(), ObjectUtils.asMap(
+                        "public_id", "blogapp/" +
+                                extractFileName(Objects.requireNonNull(postDto.getImageFile().getOriginalFilename()))
+                        ));
                 post.setCoverImageUrl((String) result.get("url"));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -52,13 +54,17 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         log.info("Post model  --> {}", post);
-        try{
+        try {
             return postRepository.save(post);
         } catch (DataIntegrityViolationException e) {
             log.info("Exception occurred -->{}", e.getMessage());
             throw e;
         }
 
+    }
+
+    private String extractFileName(String filename) {
+        return filename.split("\\.")[0];
     }
 
     @Override
@@ -77,8 +83,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post findPostById(Integer id) {
-        return null;
+    public Post findPostById(Integer id) throws PostNotFoundException {
+        return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 
     @Override

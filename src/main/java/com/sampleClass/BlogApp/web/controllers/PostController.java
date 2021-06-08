@@ -2,6 +2,7 @@ package com.sampleClass.BlogApp.web.controllers;
 
 import com.sampleClass.BlogApp.data.models.Post;
 import com.sampleClass.BlogApp.exceptions.NullPostObjectException;
+import com.sampleClass.BlogApp.exceptions.PostNotFoundException;
 import com.sampleClass.BlogApp.service.post.PostService;
 import com.sampleClass.BlogApp.web.dto.PostDto;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -65,5 +67,16 @@ the result of the validation is stored in the binding result object
     @ModelAttribute
     public void createPostModel(Model model){
         model.addAttribute("postDto", new PostDto());
+    }
+
+    @GetMapping("/post/{id}")
+    public String getPost(@PathVariable Optional<Integer> id, Model model) {
+        try {
+          Post post = postService.findPostById(id.orElse(-1));
+          model.addAttribute(post);
+          return "post";
+        } catch (PostNotFoundException e) {
+            return "redirect:/posts";
+        }
     }
 }

@@ -58,7 +58,7 @@
             <div class="post-content">
                 <p th:text="${post.content}"></p>
             </div>
-            <a href="/asset/pages/post.html">
+            <a th:href="@{/posts/post/{id}(id = ${post.id})}">
                 <button class="view-post">
                     continue reading
                 </button>

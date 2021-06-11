@@ -102,13 +102,13 @@ class PostRepositoryTest {
     @Rollback(value = false)
     @Test
     void deletePostTest() {
-        Post savedPost = postRepository.findById(41).orElse(null);
+        Post savedPost = postRepository.findById(45).orElse(null);
         assertThat(savedPost).isNotNull();
         log.info("Retrieved post from db --> {}", savedPost );
 
         postRepository.deleteById(savedPost.getId());
 
-        Post deletedPost = postRepository.findById(41).orElse(null);
+        Post deletedPost = postRepository.findById(45).orElse(null);
         assertThat(deletedPost).isNull();
     }
 
